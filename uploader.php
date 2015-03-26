@@ -12,16 +12,27 @@ function endsWith($haystack, $needle) {
 }
 
 function updateWebsite(){
-    if (file_exists (Constants::ZIP_TEMP_NAME)){
-        unlink(Constants::ZIP_TEMP_NAME);
+    if (file_exists (Parameters::ZIP_TEMP_NAME)){
+        unlink(Parameters::ZIP_TEMP_NAME);
     }
-
-    $now = date(Constants::DATE_FORMAT);
+    
+    $remoteVersion = file_get_contents(Parameters::VERSION_CHECK_URL);
+    $localVersion = "UNDEF";
+    if (file_exists (Parameters::VERSION_TEMP_NAME)){
+        $localVersion = file_get_contents(Parameters::VERSION_TEMP_NAME);
+    }
+    
+    if ($remoteVersion == $localVersion){
+        echo "remoteVersion" . $remoteVersion . " equal to localVersion " . $localVersion;
+        return;
+    }
+    
+    $now = date(Parameters::DATE_FORMAT);
     // get remote file to local string
-    $zipString = file_get_contents(Constants::ZIP_URL);
+    $zipString = file_get_contents(Parameters::ZIP_URL);
     // write string to local file
-    file_put_contents(Constants::ZIP_TEMP_NAME,$zipString);
-    $zip = zip_open(Constants::ZIP_TEMP_NAME);
+    file_put_contents(Parameters::ZIP_TEMP_NAME,$zipString);
+    $zip = zip_open(Parameters::ZIP_TEMP_NAME);
     $websiteRoot = NULL;
     if (is_resource($zip)){
         while ($zip_entry = zip_read($zip)){
@@ -47,7 +58,7 @@ function updateWebsite(){
         }
         zip_close($zip);
     }
-    unlink(Constants::ZIP_TEMP_NAME);
+    unlink(Parameters::ZIP_TEMP_NAME);
 
 
     $htaccessContent = "";
@@ -62,13 +73,14 @@ function updateWebsite(){
     $htaccessContent.= "    RewriteRule ^(.*)$ ". $websiteRoot ."$1 [L]" . PHP_EOL;
     $htaccessContent.= "</IfModule>";
 
-    file_put_contents(Constants::HTACCESS_FILE,$htaccessContent);
+    file_put_contents(Parameters::HTACCESS_FILE,$htaccessContent);
+    file_put_contents(Parameters::VERSION_TEMP_NAME,$remoteVersion);
 }
 
 
 function main(){
-    if (isset($_POST[Constants::USER_PARAM]) &&  isset($_POST[Constants::PASSWORD_PARAM])){
-        if ((Constants::USER == $_POST[Constants::USER_PARAM]) && (Constants::PASSWORD == $_POST[Constants::PASSWORD_PARAM] )){
+    if (isset($_POST[Parameters::USER_PARAM]) &&  isset($_POST[Parameters::PASSWORD_PARAM])){
+        if ((Parameters::USER == $_POST[Parameters::USER_PARAM]) && (Parameters::PASSWORD == $_POST[Parameters::PASSWORD_PARAM] )){
             // user and password are correct
             updateWebsite();
         }else{
@@ -78,8 +90,8 @@ function main(){
     }else{
         // present the login form
         echo '<form action="" method="post">' . PHP_EOL;
-        echo 'username <input type="text" id="'.Constants::USER_PARAM.'" name="'.Constants::USER_PARAM.'"><br>' . PHP_EOL;
-        echo 'password <input type="password" id="'.Constants::PASSWORD_PARAM.'" name="'.Constants::PASSWORD_PARAM.'"><br>' . PHP_EOL;
+        echo 'username <input type="text" id="'.Parameters::USER_PARAM.'" name="'.Parameters::USER_PARAM.'"><br>' . PHP_EOL;
+        echo 'password <input type="password" id="'.Parameters::PASSWORD_PARAM.'" name="'.Parameters::PASSWORD_PARAM.'"><br>' . PHP_EOL;
         echo '<input type="submit" id="submit" name="submit">' . PHP_EOL;
         echo '</form>' . PHP_EOL;
     }
