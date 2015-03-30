@@ -46,7 +46,7 @@ function updateWebsite(){
                 if (is_null($websiteRoot)){
                     $websiteRoot = $zipEntryName;
                 }
-                $zipEntryContents = zip_entry_read($zip_entry);
+                $zipEntryContents = zip_entry_read($zip_entry,zip_entry_filesize($zip_entry));
                 if (endsWith($zipEntryName,"/")){
                     echo $zipEntryName . " is a dir";
                     mkdir($zipEntryName, 0777, true);
