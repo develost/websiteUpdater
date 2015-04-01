@@ -6,6 +6,10 @@
 <?php
 include_once "parameters.php";
 
+class Constants{
+    const WEBSU_CURRENT_VERSION = '0.0.0';
+};
+
 function endsWith($haystack, $needle) {
     // search forward starting from end minus needle length characters
     return $needle === "" || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== FALSE);
@@ -91,15 +95,15 @@ function main(){
         }
     }else{
         // present the login form
-        echo 'Websu - website uploader v 0.0.0 <br>' . PHP_EOL;
+        echo 'Websu - website uploader v '. Constants::WEBSU_CURRENT_VERSION .' <br>' . PHP_EOL;
         echo '<form action="" method="post">' . PHP_EOL;
         echo 'username <input type="text" id="'.Parameters::USER_PARAM.'" name="'.Parameters::USER_PARAM.'"><br>' . PHP_EOL;
         echo 'password <input type="password" id="'.Parameters::PASSWORD_PARAM.'" name="'.Parameters::PASSWORD_PARAM.'"><br>' . PHP_EOL;
-        echo '<input type="submit" id="submit" name="submit" value="update" >' . PHP_EOL;
+        echo '<input type="submit" id="submit" name="submit" value="update website" >' . PHP_EOL;
         echo '</form>' . PHP_EOL;
+        echo '<a href="/">Website root</a> '
     }
 }
-
 
 main();
 

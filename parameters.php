@@ -6,6 +6,7 @@
         const ZIP_TEMP_NAME = 'website.zip';
         const VERSION_CHECK_URL = 'https://raw.githubusercontent.com/develost/_mywebsiteout/master/version.txt';
         const VERSION_TEMP_NAME = 'version.txt';
+        const WEBSU_CHECK_URL = '';
         const USER = 'example';
         const PASSWORD = 'secret';
         const DATE_FORMAT = 'YmdHis';
