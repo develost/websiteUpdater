@@ -95,13 +95,35 @@ function main(){
         }
     }else{
         // present the login form
-        echo 'Websu - website uploader v '. Constants::WEBSU_CURRENT_VERSION .' <br>' . PHP_EOL;
+        
+        $localVersion = "UNDEF";
+        if (file_exists (Parameters::VERSION_TEMP_NAME)){
+            $localVersion = file_get_contents(Parameters::VERSION_TEMP_NAME);
+        }        
+        
         echo '<form action="" method="post">' . PHP_EOL;
-        echo 'username <input type="text" id="'.Parameters::USER_PARAM.'" name="'.Parameters::USER_PARAM.'"><br>' . PHP_EOL;
-        echo 'password <input type="password" id="'.Parameters::PASSWORD_PARAM.'" name="'.Parameters::PASSWORD_PARAM.'"><br>' . PHP_EOL;
-        echo '<input type="submit" id="submit" name="submit" value="update website" >' . PHP_EOL;
-        echo '</form>' . PHP_EOL;
-        echo '<a href="/">Website root</a> '
+        echo '    <fieldset>'.PHP_EOL;
+        echo '        <legend>Status</legend>'.PHP_EOL;
+        echo '        my website version ' . $localVersion . ' <br>' . PHP_EOL;
+        echo '        websu version ' . Constants::WEBSU_CURRENT_VERSION . ' <br>' . PHP_EOL;
+        echo '    </fieldset>'.PHP_EOL;
+        echo '    <fieldset>'.PHP_EOL;
+        echo '        <legend>Authentication</legend>'.PHP_EOL;
+        echo '        username <input type="text" id="'.Parameters::USER_PARAM.'" name="'.Parameters::USER_PARAM.'"><br>' . PHP_EOL;
+        echo '        password <input type="password" id="'.Parameters::PASSWORD_PARAM.'" name="'.Parameters::PASSWORD_PARAM.'"><br>' . PHP_EOL;
+        echo '    </fieldset>'.PHP_EOL;
+        echo '    <fieldset>'.PHP_EOL;
+        echo '        <legend>Update</legend>'.PHP_EOL;
+        echo '        my website <input type="radio" name="what" value="mywebsite" checked="checked"/>'.PHP_EOL;
+        echo '        websu <input type="radio" name="what" value="websu"/>'.PHP_EOL;
+        echo '        <input type="submit" id="submit" name="submit" value="Start" >' . PHP_EOL;
+        echo '    </fieldset>'.PHP_EOL;
+        echo '    <fieldset>'.PHP_EOL;
+        echo '        <legend>Resources</legend>'.PHP_EOL;
+        echo '        <a href="/">my website root</a><br>'.PHP_EOL;
+        echo '        <a href="http://www.develost.com/websu">websu home page</a><br>'.PHP_EOL;
+        echo '    </fieldset>'.PHP_EOL;
+        echo '</form>'.PHP_EOL;
     }
 }
 
