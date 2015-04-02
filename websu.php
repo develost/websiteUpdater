@@ -7,7 +7,7 @@
 include_once "parameters.php";
 
 class Constants{
-    const WEBSU_CURRENT_VERSION = '0.0.1a';
+    const WEBSU_CURRENT_VERSION = '0.0.1b';
 };
 
 function endsWith($haystack, $needle) {
