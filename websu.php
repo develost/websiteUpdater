@@ -26,7 +26,7 @@
 include_once "parameters.php";
 
 class Constants{
-    const WEBSU_CURRENT_VERSION = '0.0.2';
+    const WEBSU_CURRENT_VERSION = '0.0.3';
     const WEBSU_VERSION_CHECK_URL = 'https://raw.githubusercontent.com/develost/websu/master/version.txt';
     //const WEBSU_VERSION_CHECK_URL = 'http://www.develost.com/apps/websuversion';
     const WEBSU_FILE_URL = 'https://raw.githubusercontent.com/develost/websu/master/websu.php';
