@@ -1,13 +1,34 @@
 <html>
 <head>
-<title>Websu - for internal use only</title>
+<title>Websu - website updater</title>
+<style>
+    body{vertical-align:bottom;line-height:25px;font-family:Arial;background-color:#EEEEEE;}
+    fieldset{background:#FFFFFF;color:#000000;border: solid 1px black;margin-bottom:20px;}
+    legend{background:#0000EE;border: solid 1px black;color:#FFFFFF;padding:5px 20px 5px 20px;width:150px;}
+    input[type=submit] {width: 100%;height:30px;}    
+    a{color:#000000;text-decoration:none;}
+    a:hover{text-decoration:underline;}
+    .header{padding-top:10px;text-align:center;}
+    .header h1{}
+    .main{padding-top:10px;}
+    .left{float:left;}
+    .right{float:right;}
+    .update{background:#EE0000;}
+</style>
 </head>
 <body>
+<div class="header">
+    <a href="http://www.develost.com/websu"><h1>Websu</h1></a>
+    <h2>website updater</h2>
+</div>
+<div class="main">
 <?php
 include_once "parameters.php";
 
 class Constants{
-    const WEBSU_CURRENT_VERSION = '0.0.1c';
+    const WEBSU_CURRENT_VERSION = '0.0.2';
+    const WEBSU_VERSION_CHECK_URL = 'http://www.develost.com/apps/websuversion';
+    const WEBSU_FILE_URL = 'https://raw.githubusercontent.com/develost/websu/master/websu.php';
 };
 
 function endsWith($haystack, $needle) {
@@ -15,15 +36,23 @@ function endsWith($haystack, $needle) {
     return $needle === "" || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== FALSE);
 }
 
+// TODO 1: handle error of file_get_contents AND file_put_contents 
+// Both return FALSE on failure
+// Step 1: check the return code: if($content === FALSE) { // handle error here... }
+// Step 2: suppress the warning by putting an @ in front of the file_get_contents: $content = @file_get_contents($site);
+
+
+
+
 function updateWebsite(){
-    if (file_exists (Parameters::ZIP_TEMP_NAME)){
-        unlink(Parameters::ZIP_TEMP_NAME);
+    if (file_exists (Parameters::WEBSITE_ZIP_TEMP_NAME)){
+        unlink(Parameters::WEBSITE_ZIP_TEMP_NAME);
     }
     
-    $remoteVersion = file_get_contents(Parameters::VERSION_CHECK_URL);
+    $remoteVersion = file_get_contents(Parameters::WEBSITE_VERSION_CHECK_URL);
     $localVersion = "UNDEF";
-    if (file_exists (Parameters::VERSION_TEMP_NAME)){
-        $localVersion = file_get_contents(Parameters::VERSION_TEMP_NAME);
+    if (file_exists (Parameters::WEBSITE_VERSION_TEMP_NAME)){
+        $localVersion = file_get_contents(Parameters::WEBSITE_VERSION_TEMP_NAME);
     }
     
     if ($remoteVersion == $localVersion){
@@ -33,12 +62,12 @@ function updateWebsite(){
         echo "Migrating from " . $localVersion . " to " . $remoteVersion . "<br>";
     }
     
-    $now = date(Parameters::DATE_FORMAT);
+    $now = date(Parameters::GENERAL_DATE_FORMAT);
     // get remote file to local string
-    $zipString = file_get_contents(Parameters::ZIP_URL);
+    $zipString = file_get_contents(Parameters::WEBSITE_ZIP_URL);
     // write string to local file
-    file_put_contents(Parameters::ZIP_TEMP_NAME,$zipString);
-    $zip = zip_open(Parameters::ZIP_TEMP_NAME);
+    file_put_contents(Parameters::WEBSITE_ZIP_TEMP_NAME,$zipString);
+    $zip = zip_open(Parameters::WEBSITE_ZIP_TEMP_NAME);
     $websiteRoot = NULL;
     if (is_resource($zip)){
         while ($zip_entry = zip_read($zip)){
@@ -64,7 +93,7 @@ function updateWebsite(){
         }
         zip_close($zip);
     }
-    unlink(Parameters::ZIP_TEMP_NAME);
+    unlink(Parameters::WEBSITE_ZIP_TEMP_NAME);
 
 
     $htaccessContent = "";
@@ -79,56 +108,77 @@ function updateWebsite(){
     $htaccessContent.= "    RewriteRule ^(.*)$ ". $websiteRoot ."$1 [L]" . PHP_EOL;
     $htaccessContent.= "</IfModule>";
 
-    file_put_contents(Parameters::HTACCESS_FILE,$htaccessContent);
-    file_put_contents(Parameters::VERSION_TEMP_NAME,$remoteVersion);
+    file_put_contents(Parameters::GENERAL_HTACCESS_FILE,$htaccessContent);
+    file_put_contents(Parameters::WEBSITE_VERSION_TEMP_NAME,$remoteVersion);
 }
 
 
+function updateWebsu(){
+
+
+}
+
+
+function presentLoginForm(){
+    $localVersion = "UNDEF";
+    if (file_exists (Parameters::WEBSITE_VERSION_TEMP_NAME)){
+        $localVersion = file_get_contents(Parameters::WEBSITE_VERSION_TEMP_NAME);
+    }        
+    echo '<form action="" method="post">' . PHP_EOL;
+    echo '    <fieldset>'.PHP_EOL;
+    echo '        <legend>Status</legend>'.PHP_EOL;
+    echo '        <label class="left">My website version </label>   <input class="right" type="text" value="' . $localVersion . '" disabled> <br>' . PHP_EOL;
+    echo '        <label class="left">Websu version</label>         <input class="right" type="text" value="' . Constants::WEBSU_CURRENT_VERSION . '" disabled> <br>' . PHP_EOL;
+    echo '    </fieldset>'.PHP_EOL;
+    echo '    <fieldset>'.PHP_EOL;
+    echo '        <legend>Authentication</legend>'.PHP_EOL;
+    echo '        <label class="left">Username</label>              <input class="right" type="text" id="'.Parameters::GENERAL_USER_PARAM.'" name="'.Parameters::GENERAL_USER_PARAM.'" required><br>' . PHP_EOL;
+    echo '        <label class="left">Password</label>              <input class="right" type="password" id="'.Parameters::GENERAL_PASSWORD_PARAM.'" name="'.Parameters::GENERAL_PASSWORD_PARAM.'" required><br>' . PHP_EOL;
+    echo '    </fieldset>'.PHP_EOL;
+    echo '    <fieldset>'.PHP_EOL;
+    echo '        <legend class="update">Update</legend>'.PHP_EOL;
+    echo '        <label class="left">My website</label>            <input class="left" type="radio" name="'.Parameters::GENERAL_WHAT_PARAM.'" value="'.Parameters::GENERAL_WHAT_MYWEBSITE.'" checked="checked"/>'.PHP_EOL;
+    echo '        <label class="right">Websu</label>                <input class="right" type="radio" name="'.Parameters::GENERAL_WHAT_PARAM.'" value="'.Parameters::GENERAL_WHAT_WEBSU.'"/><br>'.PHP_EOL;
+    echo '        <input type="submit" id="submit" name="submit" value="Start">' . PHP_EOL;
+    echo '    </fieldset>'.PHP_EOL;
+    echo '    <fieldset>'.PHP_EOL;
+    echo '        <legend>Resources</legend>'.PHP_EOL;
+    echo '        <a class="left" href="'. Parameters::WEBSITE_ROOT . '">my website root</a>'.PHP_EOL;
+    echo '        <a class="right" href="http://www.develost.com/websu">websu home page</a><br>'.PHP_EOL;
+    echo '    </fieldset>'.PHP_EOL;
+    echo '</form>'.PHP_EOL;
+}
+
+
+/*************************************************************************************************
+ * 
+ *************************************************************************************************/
 function main(){
-    if (isset($_POST[Parameters::USER_PARAM]) &&  isset($_POST[Parameters::PASSWORD_PARAM])){
-        if ((Parameters::USER == $_POST[Parameters::USER_PARAM]) && (Parameters::PASSWORD == $_POST[Parameters::PASSWORD_PARAM] )){
+    if (isset($_POST[Parameters::GENERAL_USER_PARAM]) &&  isset($_POST[Parameters::GENERAL_PASSWORD_PARAM])){
+        if ((Parameters::WEBSITE_UPDATE_USER == $_POST[Parameters::GENERAL_USER_PARAM]) && (Parameters::WEBSITE_UPDATE_PASSWORD == $_POST[Parameters::PASSWORD_PARAM] )){
             // user and password are correct
-            updateWebsite();
+            // check if update website or websu
+            if ($_POST[Parameters::GENERAL_WHAT_PARAM] == Parameters::GENERAL_WHAT_MYWEBSITE){
+                updateWebsite();
+            }else if ($_POST[Parameters::GENERAL_WHAT_PARAM] == Parameters::GENERAL_WHAT_WEBSU){
+                updateWebsu();
+            }else {
+                echo '<div>Unknown update type</div>';
+            }
         }else{
             // login incorrect
             echo '<div>Login error</div>';
         }
     }else{
         // present the login form
-        
-        $localVersion = "UNDEF";
-        if (file_exists (Parameters::VERSION_TEMP_NAME)){
-            $localVersion = file_get_contents(Parameters::VERSION_TEMP_NAME);
-        }        
-        
-        echo '<form action="" method="post">' . PHP_EOL;
-        echo '    <fieldset>'.PHP_EOL;
-        echo '        <legend>Status</legend>'.PHP_EOL;
-        echo '        my website version ' . $localVersion . ' <br>' . PHP_EOL;
-        echo '        websu version ' . Constants::WEBSU_CURRENT_VERSION . ' <br>' . PHP_EOL;
-        echo '    </fieldset>'.PHP_EOL;
-        echo '    <fieldset>'.PHP_EOL;
-        echo '        <legend>Authentication</legend>'.PHP_EOL;
-        echo '        username <input type="text" id="'.Parameters::USER_PARAM.'" name="'.Parameters::USER_PARAM.'"><br>' . PHP_EOL;
-        echo '        password <input type="password" id="'.Parameters::PASSWORD_PARAM.'" name="'.Parameters::PASSWORD_PARAM.'"><br>' . PHP_EOL;
-        echo '    </fieldset>'.PHP_EOL;
-        echo '    <fieldset>'.PHP_EOL;
-        echo '        <legend>Update</legend>'.PHP_EOL;
-        echo '        my website <input type="radio" name="what" value="mywebsite" checked="checked"/>'.PHP_EOL;
-        echo '        websu <input type="radio" name="what" value="websu"/>'.PHP_EOL;
-        echo '        <input type="submit" id="submit" name="submit" value="Start" >' . PHP_EOL;
-        echo '    </fieldset>'.PHP_EOL;
-        echo '    <fieldset>'.PHP_EOL;
-        echo '        <legend>Resources</legend>'.PHP_EOL;
-        echo '        <a href="/">my website root</a><br>'.PHP_EOL;
-        echo '        <a href="http://www.develost.com/websu">websu home page</a><br>'.PHP_EOL;
-        echo '    </fieldset>'.PHP_EOL;
-        echo '</form>'.PHP_EOL;
+        presentLoginForm(); 
     }
 }
 
-main();
 
+
+main();
 ?>
+</div>
 </body>
 </html>
