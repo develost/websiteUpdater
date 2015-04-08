@@ -27,10 +27,14 @@ include_once "parameters.php";
 
 class Constants{
     const WEBSU_CURRENT_VERSION = '0.0.2';
-    const WEBSU_VERSION_CHECK_URL = 'http://www.develost.com/apps/websuversion';
+    const WEBSU_VERSION_CHECK_URL = 'https://raw.githubusercontent.com/develost/websu/master/version.txt';
+    //const WEBSU_VERSION_CHECK_URL = 'http://www.develost.com/apps/websuversion';
     const WEBSU_FILE_URL = 'https://raw.githubusercontent.com/develost/websu/master/websu.php';
 };
 
+/*************************************************************************************************
+ * 
+ *************************************************************************************************/
 function endsWith($haystack, $needle) {
     // search forward starting from end minus needle length characters
     return $needle === "" || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== FALSE);
@@ -43,7 +47,9 @@ function endsWith($haystack, $needle) {
 
 
 
-
+/*************************************************************************************************
+ * 
+ *************************************************************************************************/
 function updateWebsite(){
     if (file_exists (Parameters::WEBSITE_ZIP_TEMP_NAME)){
         unlink(Parameters::WEBSITE_ZIP_TEMP_NAME);
@@ -112,13 +118,26 @@ function updateWebsite(){
     file_put_contents(Parameters::WEBSITE_VERSION_TEMP_NAME,$remoteVersion);
 }
 
-
+/*************************************************************************************************
+ * 
+ *************************************************************************************************/
 function updateWebsu(){
-
-
+    $remoteVersion = file_get_contents(Constants::WEBSU_VERSION_CHECK_URL);
+    $localVersion = Constants::WEBSU_CURRENT_VERSION;
+    if ($remoteVersion == $localVersion){
+        echo "remoteVersion " . $remoteVersion . " equal to localVersion " . $localVersion;
+        return;
+    }else{
+        echo "Migrating from " . $localVersion . " to " . $remoteVersion . "<br>";
+    }
+    $websuString = file_get_contents(Constants::WEBSU_FILE_URL);
+    // write string to local file
+    file_put_contents("websu" . $remoteVersion . ".php",$websuString);
 }
 
-
+/*************************************************************************************************
+ * 
+ *************************************************************************************************/
 function presentLoginForm(){
     $localVersion = "UNDEF";
     if (file_exists (Parameters::WEBSITE_VERSION_TEMP_NAME)){
@@ -155,7 +174,7 @@ function presentLoginForm(){
  *************************************************************************************************/
 function main(){
     if (isset($_POST[Parameters::GENERAL_USER_PARAM]) &&  isset($_POST[Parameters::GENERAL_PASSWORD_PARAM])){
-        if ((Parameters::WEBSITE_UPDATE_USER == $_POST[Parameters::GENERAL_USER_PARAM]) && (Parameters::WEBSITE_UPDATE_PASSWORD == $_POST[Parameters::PASSWORD_PARAM] )){
+        if ((Parameters::WEBSITE_UPDATE_USER == $_POST[Parameters::GENERAL_USER_PARAM]) && (Parameters::WEBSITE_UPDATE_PASSWORD == $_POST[Parameters::GENERAL_PASSWORD_PARAM] )){
             // user and password are correct
             // check if update website or websu
             if ($_POST[Parameters::GENERAL_WHAT_PARAM] == Parameters::GENERAL_WHAT_MYWEBSITE){
