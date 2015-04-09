@@ -1,6 +1,8 @@
 <?php
     if(count(get_included_files()) == 1) exit("Direct access not permitted.");
     
+    define('_CUSTOM_REDIRECT_', '    RewriteCond %{REQUEST_URI} ^/apps/.*' . PHP_EOL . '    RewriteRule ^(.*)$ $1 [L]' . PHP_EOL);
+    
     class Parameters{
         const WEBSITE_ZIP_URL = 'https://github.com/develost/_mywebsiteout/archive/master.zip';
         const WEBSITE_ZIP_TEMP_NAME = 'website.zip';
@@ -9,7 +11,7 @@
         const WEBSITE_ROOT = '/';
         const WEBSITE_UPDATE_USER = 'example';
         const WEBSITE_UPDATE_PASSWORD = 'secret';
-
+        const WEBSITE_CUSTOM_REDIRECT = _CUSTOM_REDIRECT_;
         const GENERAL_DATE_FORMAT = 'YmdHis';
         const GENERAL_USER_PARAM = 'user';
         const GENERAL_PASSWORD_PARAM = 'password';

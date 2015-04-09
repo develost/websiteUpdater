@@ -115,7 +115,7 @@ function updateWebsite(){
         zip_close($zip);
     }
     echo "</table>". PHP_EOL;
-    echo "Generated " . $dirCounter . " dirs and " . $fileCounter . " files".PHP_EOL;
+    echo "Written " . $dirCounter . " dirs and " . $fileCounter . " files".PHP_EOL;
     unlink(Parameters::WEBSITE_ZIP_TEMP_NAME);
 
 
@@ -125,10 +125,11 @@ function updateWebsite(){
     $htaccessContent.= "# ------------------------------------------------" . PHP_EOL;
     $htaccessContent.= "<IfModule mod_rewrite.c>" . PHP_EOL;
     $htaccessContent.= "    RewriteEngine On" . PHP_EOL;
-    $htaccessContent.= "    RewriteCond %{REQUEST_URI} ^/websu.php" . PHP_EOL;
-    $htaccessContent.= "    RewriteRule ^(.*)$ $1 [L]" . PHP_EOL;
-    $htaccessContent.= "    RewriteCond %{REQUEST_URI} !^/" . $websiteRoot . PHP_EOL;
-    $htaccessContent.= "    RewriteRule ^(.*)$ ". $websiteRoot ."$1 [L]" . PHP_EOL;
+    $htaccessContent.= "    RewriteCond %{REQUEST_URI} ^". Parameters::WEBSITE_ROOT . "websu.php" . PHP_EOL;
+    $htaccessContent.= "    RewriteRule ^(.*)$ websu.php [L]" . PHP_EOL;
+    $htaccessContent.= Parameters::WEBSITE_CUSTOM_REDIRECT;
+    $htaccessContent.= "    RewriteCond %{REQUEST_URI} !^" . Parameters::WEBSITE_ROOT . $websiteRoot . PHP_EOL;
+    $htaccessContent.= "    RewriteRule ^(.*)$ " . Parameters::WEBSITE_ROOT . $websiteRoot . "$1 [L]" . PHP_EOL;
     $htaccessContent.= "</IfModule>";
 
     file_put_contents(Parameters::GENERAL_HTACCESS_FILE,$htaccessContent);
