@@ -1,10 +1,16 @@
 <html>
 <head>
 <title>Websu - website updater</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <style>
     body{vertical-align:bottom;line-height:25px;font-family:Arial;background-color:#EEEEEE;}
     fieldset{background:#FFFFFF;color:#000000;border: solid 1px black;margin-bottom:20px;}
     legend{background:#0000EE;border: solid 1px black;color:#FFFFFF;padding:5px 20px 5px 20px;width:150px;}
+    table{border-collapse:collapse;}
+    table,th,td{border: 1px solid black;}
+    th{background-color: green;color: white;}  
+    td,th{padding:5px;}    
     input[type=submit] {width: 100%;height:30px;}    
     a{color:#000000;text-decoration:none;}
     a:hover{text-decoration:underline;}
@@ -14,6 +20,8 @@
     .left{float:left;}
     .right{float:right;}
     .update{background:#EE0000;}
+    .clear{clear:both;}
+    .center{text-align:center;}
 </style>
 </head>
 <body>
@@ -26,9 +34,9 @@
 include_once "parameters.php";
 
 class Constants{
-    const WEBSU_CURRENT_VERSION = '0.0.3';
+    const WEBSU_CURRENT_VERSION = '0.0.4';
     const WEBSU_VERSION_CHECK_URL = 'https://raw.githubusercontent.com/develost/websu/master/version.txt';
-    //const WEBSU_VERSION_CHECK_URL = 'http://www.develost.com/apps/websuversion';
+    //const WEBSU_VERSION_CHECK_URL = 'https://www.develost.com/apps/websuversion';
     const WEBSU_FILE_URL = 'https://raw.githubusercontent.com/develost/websu/master/websu.php';
 };
 
@@ -69,16 +77,19 @@ function updateWebsite(){
     }
     
     $now = date(Parameters::GENERAL_DATE_FORMAT);
+    echo "Now: " . $now . "<br>";
     // get remote file to local string
     $zipString = file_get_contents(Parameters::WEBSITE_ZIP_URL);
     // write string to local file
     file_put_contents(Parameters::WEBSITE_ZIP_TEMP_NAME,$zipString);
     $zip = zip_open(Parameters::WEBSITE_ZIP_TEMP_NAME);
     $websiteRoot = NULL;
+    echo '<table><tr><th class="center">Type</th><th class="center">Name</th></tr>'. PHP_EOL;
+    $fileCounter = 0;
+    $dirCounter = 0;
     if (is_resource($zip)){
         while ($zip_entry = zip_read($zip)){
-            echo "<p>";
-            echo "Name: " . zip_entry_name($zip_entry) . "<br />";
+            echo '<tr><td class="center">';
             if (zip_entry_open($zip, $zip_entry)){
                 $zipEntryName = zip_entry_name($zip_entry);
                 $zipEntryName = $now . '-' . $zipEntryName;
@@ -87,18 +98,24 @@ function updateWebsite(){
                 }
                 $zipEntryContents = zip_entry_read($zip_entry,zip_entry_filesize($zip_entry));
                 if (endsWith($zipEntryName,"/")){
-                    echo $zipEntryName . " is a dir";
+                    //echo $zipEntryName . "D";
+                    echo "D";
+                    $dirCounter ++;
                     mkdir($zipEntryName, 0777, true);
                 } else { 
-                    echo $zipEntryName . " is a file";
+                    //echo $zipEntryName . "F";
+                    echo "F";
+                    $fileCounter ++;
                     file_put_contents($zipEntryName,$zipEntryContents);   
                 }
                 zip_entry_close($zip_entry);
             }
-            echo "</p>";
+            echo "</td><td>" . zip_entry_name($zip_entry) . "</td></tr>". PHP_EOL;
         }
         zip_close($zip);
     }
+    echo "</table>". PHP_EOL;
+    echo "Generated " . $dirCounter . " dirs and " . $fileCounter . " files".PHP_EOL;
     unlink(Parameters::WEBSITE_ZIP_TEMP_NAME);
 
 
@@ -146,24 +163,24 @@ function presentLoginForm(){
     echo '<form action="" method="post">' . PHP_EOL;
     echo '    <fieldset>'.PHP_EOL;
     echo '        <legend>Status</legend>'.PHP_EOL;
-    echo '        <label class="left">My website version </label>   <input class="right" type="text" value="' . $localVersion . '" disabled> <br>' . PHP_EOL;
-    echo '        <label class="left">Websu version</label>         <input class="right" type="text" value="' . Constants::WEBSU_CURRENT_VERSION . '" disabled> <br>' . PHP_EOL;
+    echo '        <p class="clear"><label class="left">My website version </label>   <input class="right" type="text" value="' . $localVersion . '" disabled></p>' . PHP_EOL;
+    echo '        <p class="clear"><label class="left">Websu version</label>         <input class="right" type="text" value="' . Constants::WEBSU_CURRENT_VERSION . '" disabled></p>' . PHP_EOL;
     echo '    </fieldset>'.PHP_EOL;
     echo '    <fieldset>'.PHP_EOL;
     echo '        <legend>Authentication</legend>'.PHP_EOL;
-    echo '        <label class="left">Username</label>              <input class="right" type="text" id="'.Parameters::GENERAL_USER_PARAM.'" name="'.Parameters::GENERAL_USER_PARAM.'" required><br>' . PHP_EOL;
-    echo '        <label class="left">Password</label>              <input class="right" type="password" id="'.Parameters::GENERAL_PASSWORD_PARAM.'" name="'.Parameters::GENERAL_PASSWORD_PARAM.'" required><br>' . PHP_EOL;
+    echo '        <p class="clear"><label class="left">Username</label>              <input class="right" type="text" id="'.Parameters::GENERAL_USER_PARAM.'" name="'.Parameters::GENERAL_USER_PARAM.'" required></p>' . PHP_EOL;
+    echo '        <p class="clear"><label class="left">Password</label>              <input class="right" type="password" id="'.Parameters::GENERAL_PASSWORD_PARAM.'" name="'.Parameters::GENERAL_PASSWORD_PARAM.'" required></p>' . PHP_EOL;
     echo '    </fieldset>'.PHP_EOL;
     echo '    <fieldset>'.PHP_EOL;
     echo '        <legend class="update">Update</legend>'.PHP_EOL;
-    echo '        <label class="left">My website</label>            <input class="left" type="radio" name="'.Parameters::GENERAL_WHAT_PARAM.'" value="'.Parameters::GENERAL_WHAT_MYWEBSITE.'" checked="checked"/>'.PHP_EOL;
-    echo '        <label class="right">Websu</label>                <input class="right" type="radio" name="'.Parameters::GENERAL_WHAT_PARAM.'" value="'.Parameters::GENERAL_WHAT_WEBSU.'"/><br>'.PHP_EOL;
-    echo '        <input type="submit" id="submit" name="submit" value="Start">' . PHP_EOL;
+    echo '        <p class="clear"><label class="left">My website</label>            <input class="left" type="radio" name="'.Parameters::GENERAL_WHAT_PARAM.'" value="'.Parameters::GENERAL_WHAT_MYWEBSITE.'" checked="checked"/>'.PHP_EOL;
+    echo '        <label class="right">Websu</label>                <input class="right" type="radio" name="'.Parameters::GENERAL_WHAT_PARAM.'" value="'.Parameters::GENERAL_WHAT_WEBSU.'"/></p>'.PHP_EOL;
+    echo '        <p class="clear"><input type="submit" id="submit" name="submit" value="Start"></p>' . PHP_EOL;
     echo '    </fieldset>'.PHP_EOL;
     echo '    <fieldset>'.PHP_EOL;
     echo '        <legend>Resources</legend>'.PHP_EOL;
-    echo '        <a class="left" href="'. Parameters::WEBSITE_ROOT . '">my website root</a>'.PHP_EOL;
-    echo '        <a class="right" href="http://www.develost.com/websu">websu home page</a><br>'.PHP_EOL;
+    echo '        <p class="clear"><a class="left" href="'. Parameters::WEBSITE_ROOT . '">my website root</a>'.PHP_EOL;
+    echo '        <a class="right" href="http://www.develost.com/websu">websu home page</a></p>'.PHP_EOL;
     echo '    </fieldset>'.PHP_EOL;
     echo '</form>'.PHP_EOL;
 }
