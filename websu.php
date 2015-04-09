@@ -149,7 +149,8 @@ function updateWebsu(){
     }
     $websuString = file_get_contents(Constants::WEBSU_FILE_URL);
     // write string to local file
-    file_put_contents("websu" . $remoteVersion . ".php",$websuString);
+    //file_put_contents("websu" . $remoteVersion . ".php",$websuString);
+    file_put_contents("websu.php",$websuString);
 }
 
 /*************************************************************************************************
