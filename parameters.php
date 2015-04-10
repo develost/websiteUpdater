@@ -4,9 +4,9 @@
     define('_CUSTOM_REDIRECT_', '');
     
     class Parameters{
-        const WEBSITE_ZIP_URL = 'https://raw.githubusercontent.com/develost/master/example/example_website.zip';
+        const WEBSITE_ZIP_URL = 'https://raw.githubusercontent.com/develost/websu/master/example/example_website.zip';
         const WEBSITE_ZIP_TEMP_NAME = 'example_website.zip';
-        const WEBSITE_VERSION_CHECK_URL = 'https://raw.githubusercontent.com/develost/master/example/example_version.txt';
+        const WEBSITE_VERSION_CHECK_URL = 'https://raw.githubusercontent.com/develost/websu/master/example/example_version.txt';
         const WEBSITE_VERSION_TEMP_NAME = 'version.txt';
         const WEBSITE_ROOT = '/';
         const WEBSITE_UPDATE_USER = 'example';
