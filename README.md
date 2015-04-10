@@ -34,6 +34,3 @@ TODO
 ![websu main page](https://github.com/develost/websu/raw/master/websu_main_page.jpg "websu main page")
 ![websu file page](https://github.com/develost/websu/raw/master/websu_file_page.jpg "websu file page")
 
-
-
-TODO 
