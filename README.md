@@ -4,14 +4,24 @@
 Websu is designed specifically for this:
  - it prepares a fresh copy of your website
  - and switches to the new version only when the copy of all the files is done
- - it works under apache httpd, does not work for IIS
+ - it works under *apache httpd*, does not work for IIS
 
-## Quick test
-TODO
+## Quick start
+ - download websu.php and parameters.php and put them into the root folder of yout website
+ - user example password secret
+ - run update website
+ - go to root folder, you should see "It Works" page
 
+### Problems?
+ 1. Check php.ini
+```ini
+    allow_url_fopen = On
+```
+ 2. Check PHP version 5 or above 
+ 3. Check and eventually open issue here on github 
  
 ## Initial setup
- - websu is written in PHP so make sure your web server support php (version 5) language
+ - websu is written in PHP so make sure your web server support php (version 5 or above) language
  - enable the following in php.ini
 ```ini
     allow_url_fopen = On
