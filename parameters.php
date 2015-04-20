@@ -12,6 +12,8 @@
         const WEBSITE_UPDATE_USER = 'example';
         const WEBSITE_UPDATE_PASSWORD = 'secret';
         const WEBSITE_CUSTOM_REDIRECT = _CUSTOM_REDIRECT_;
+        //const WEBSITE_CRYPTO_KEY = 'SAGFo92jzVnzSj39IUYGvi4eL8v2RvJG8Cytuiouh147vCytdyWFl91R';
+        const WEBSITE_CRYPTO_KEY = '';
         const GENERAL_DATE_FORMAT = 'YmdHis';
         const GENERAL_USER_PARAM = 'user';
         const GENERAL_PASSWORD_PARAM = 'password';
@@ -22,4 +24,3 @@
         
     };
 ?>
-
