@@ -101,12 +101,15 @@ function updateWebsite(){
                     //echo $zipEntryName . "D";
                     echo "D";
                     $dirCounter ++;
-                    mkdir($zipEntryName, 0777, true);
+                    if (!file_exists($zipEntryName)){
+                        mkdir($zipEntryName, 0777, true);
+                    }
+                    
                 } else { 
                     //echo $zipEntryName . "F";
                     echo "F";
                     $fileCounter ++;
-                    if (Parameters::WEBSITE_CRYPTO_KEY) != ''{
+                    if (0 != strcmp(Parameters::WEBSITE_CRYPTO_KEY,'')){
                         list($hmac, $iv, $encrypted)= explode(':',$zipEntryContents);
                         $iv = base64_decode($iv);
                         $encrypted = base64_decode($encrypted);
@@ -123,7 +126,10 @@ function updateWebsite(){
                             $iv
                         );
                         $zipEntryContents = rtrim($decrypt, "\0");                     
-                    }                    
+                    }
+                    if (file_exists($zipEntryName)){
+                        unlink($zipEntryName);
+                    }
                     file_put_contents($zipEntryName,$zipEntryContents);   
                 }
                 zip_entry_close($zip_entry);
