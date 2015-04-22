@@ -34,10 +34,11 @@
 include_once "parameters.php";
 
 class Constants{
-    const WEBSU_CURRENT_VERSION = '0.0.7';
-    const WEBSU_VERSION_CHECK_URL = 'https://raw.githubusercontent.com/develost/websu/master/version.txt';
-    //const WEBSU_VERSION_CHECK_URL = 'https://www.develost.com/apps/websuversion';
-    const WEBSU_FILE_URL = 'https://raw.githubusercontent.com/develost/websu/master/websu.php';
+    const WEBSU_CURRENT_VERSION = '0.0.8d';
+    //const WEBSU_VERSION_CHECK_URL = 'https://raw.githubusercontent.com/develost/websu/master/version.txt';
+    const WEBSU_VERSION_CHECK_URL = 'https://www.develost.com/apps/websu/last/version';
+    //const WEBSU_FILE_URL = 'https://raw.githubusercontent.com/develost/websu/master/websu.php';
+    const WEBSU_FILE_URL = 'https://www.develost.com/apps/websu/last/file';
 };
 
 /*************************************************************************************************
