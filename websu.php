@@ -110,7 +110,7 @@ function updateWebsite(){
                     //echo $zipEntryName . "F";
                     echo "F";
                     $fileCounter ++;
-                    if (0 != strcmp(Parameters::WEBSITE_CRYPTO_KEY,'')){
+                    if ((0 != strcmp(Parameters::WEBSITE_CRYPTO_KEY,'')) && endsWith($zipEntryName,Parameters::GENERAL_DECODE_SUFFIX) )  {  
                         list($hmac, $iv, $encrypted)= explode(':',$zipEntryContents);
                         $iv = base64_decode($iv);
                         $encrypted = base64_decode($encrypted);
