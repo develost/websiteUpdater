@@ -87,26 +87,30 @@
     // ---------------------------------------------------------------
     // Main
     // ---------------------------------------------------------------
-    //$key='SADFo92jzVnzSj39IUYGvi6eL8v6RvJH8Cytuiouh547vCytdyUFl76R';
-    //$basePath = './_server-bin';
-    //$extensions = array('php','py');
-    //$binExtension = 'bin';
-
     parse_str(implode('&', array_slice($argv, 1)), $_GET);
+    $mode = $_GET['mode'];
     $key = $_GET['key'];
     $basePath = $_GET['basePath'];
-    $extensions = $_GET['extensions'];
+    $extensions = explode(" ", $_GET['extensions']);
     $binExtension = $_GET['binExtension'];
-    $mode = $_GET['mode'];
     
-    if (0 == srtcmp($mode,"all")){
+    print "mode: ".$mode."\n";
+    print "key: ".$key."\n";
+    print "basePath: ".$basePath."\n";
+    print "Extensions: ";
+    print_r ($extensions);
+    print "binExtension: ".$binExtension."\n";
+    
+    if (0 == strcmp($mode,"all")){
         toBin($key,$basePath,$extensions,$binExtension);
         fromBin($key,$basePath,$extensions,$binExtension);
-    }else if (0 == srtcmp($mode,"to")){
+    }else if (0 == strcmp($mode,"to")){
         toBin($key,$basePath,$extensions,$binExtension);
-    }else if (0 == srtcmp($mode,"from")){
+    }else if (0 == strcmp($mode,"from")){
         fromBin($key,$basePath,$extensions,$binExtension);
     }else {
         print "Error: mode not found" . $mode ."\n";
     }
+    
+    print "--DONE--\n";
 ?>
