@@ -49,6 +49,11 @@ function endsWith($haystack, $needle) {
     return $needle === "" || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== FALSE);
 }
 
+function lReplace($string,$find,$replace){
+    $result = preg_replace(strrev("/$find/"),strrev($replace),strrev($string),1);
+    return strrev($result);
+}
+
 // TODO 1: handle error of file_get_contents AND file_put_contents 
 // Both return FALSE on failure
 // Step 1: check the return code: if($content === FALSE) { // handle error here... }
@@ -105,7 +110,6 @@ function updateWebsite(){
                     if (!file_exists($zipEntryName)){
                         mkdir($zipEntryName, 0777, true);
                     }
-                    
                 } else { 
                     //echo $zipEntryName . "F";
                     echo "F";
@@ -114,18 +118,19 @@ function updateWebsite(){
                         list($hmac, $iv, $encrypted)= explode(':',$zipEntryContents);
                         $iv = base64_decode($iv);
                         $encrypted = base64_decode($encrypted);
-                        $macKey = mhash_keygen_s2k(MHASH_SHA256, $key, $iv, 32);
+                        $macKey = mhash_keygen_s2k(MHASH_SHA256, Parameters::WEBSITE_CRYPTO_KEY, $iv, 32);
                         $newHmac= hash_hmac('sha256', $iv . MCRYPT_BLOWFISH . $encrypted, $macKey);
                         if ($hmac!==$newHmac) {
                             die('Authentication error: check crypto key.');
                         }
                         $decrypt = mcrypt_decrypt(
                             MCRYPT_BLOWFISH,
-                            $key,
+                            Parameters::WEBSITE_CRYPTO_KEY,
                             $encrypted,
                             MCRYPT_MODE_CBC,
                             $iv
                         );
+                        $zipEntryName = lReplace($zipEntryName,Parameters::GENERAL_DECODE_SUFFIX,'');
                         $zipEntryContents = rtrim($decrypt, "\0");                     
                     }
                     if (file_exists($zipEntryName)){
@@ -237,8 +242,6 @@ function main(){
         presentLoginForm(); 
     }
 }
-
-
 
 main();
 ?>
