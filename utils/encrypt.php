@@ -49,8 +49,8 @@
         $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path), RecursiveIteratorIterator::SELF_FIRST);
         foreach($objects as $filename => $object){
             foreach ($extensions as $extension) {
-                if (endsWith($filename,'.'.$extension)){
-                    $binName = $filename . '.' .$binExtension;
+                if (endsWith($filename,$extension)){
+                    $binName = $filename . $binExtension;
                     echo $filename . " --> " . $binName . "\n";
                     $handle = fopen($filename, "rb");
                     $plainContents = fread($handle, filesize($filename));
@@ -69,8 +69,8 @@
         $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path), RecursiveIteratorIterator::SELF_FIRST);
         foreach($objects as $binName => $object){
             foreach ($extensions as $extension) {
-                if (endsWith($binName,'.'.$extension.'.'.$binExtension)){
-                    $filename = lReplace($binName,'.'.$binExtension,'');
+                if (endsWith($binName,$extension.$binExtension)){
+                    $filename = lReplace($binName,$binExtension,'');
                     echo $filename . " <-- " . $binName . "\n";
                     $handle = fopen($binName, "rb");
                     $encryptedContents = fread($handle, filesize($binName));

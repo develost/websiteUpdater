@@ -19,6 +19,5 @@
         const GENERAL_WHAT_MYWEBSITE = 'mywebsite';
         const GENERAL_WHAT_WEBSU = 'websu';
         const GENERAL_HTACCESS_FILE = '.htaccess';
-        
     };
 ?>
