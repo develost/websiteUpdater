@@ -96,8 +96,10 @@ function updateWebsite(){
     if (is_resource($zip)){
         while ($zip_entry = zip_read($zip)){
             echo '<tr><td class="center">';
+            $originalName = 'UNDEF';
             if (zip_entry_open($zip, $zip_entry)){
                 $zipEntryName = zip_entry_name($zip_entry);
+                $originalName = $zipEntryName;
                 $zipEntryName = $now . '-' . $zipEntryName;
                 if (is_null($websiteRoot)){
                     $websiteRoot = $zipEntryName;
@@ -140,7 +142,7 @@ function updateWebsite(){
                 }
                 zip_entry_close($zip_entry);
             }
-            echo "</td><td>" . zip_entry_name($zip_entry) . "</td></tr>". PHP_EOL;
+            echo "</td><td>" . $originalName . "</td></tr>". PHP_EOL;
         }
         zip_close($zip);
     }
